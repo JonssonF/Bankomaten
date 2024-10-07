@@ -94,6 +94,7 @@
                     {
                         Console.Clear();
                         MenuOption();
+                        Console.Write("\nOption:");
                         string menuChoice = Console.ReadLine();
                         switch (menuChoice)
                         {
@@ -149,15 +150,18 @@
                 }
             }
         }
-        static void DisplayAccounts(int userID, string[][] userAccounts, double[][] accountsValue)
-        {
-            for (int i = 0; i < userAccounts[userID].Length; i++)
-            {
-                string userAccount = userAccounts[userID][i];
-                double accountValue = accountsValue[userID][i];
-                Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
-            }
-        }
+        //public string DisplayAccounts(int userID, string[][] userAccounts, double[][] accountsValue)
+        //{
+        //    for (int i = 0; i < userAccounts[userID].Length; i++)
+        //    {
+        //        string userAccount = userAccounts[userID][i];
+        //        double accountValue = accountsValue[userID][i];
+        //        Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
+        //    }
+
+            
+
+        //}
         static void ShowBalance(int userID, string[][] userAccounts, double[][] accountsValue)
         {
             for (int i = 0; i < userAccounts[userID].Length; i++)
@@ -285,35 +289,34 @@
                     Console.WriteLine("You can't transfer to the same account.");                   
                     return;
                 }
-                //Console.Write($"How much would you like to withdraw from your {userAccounts[userID][accIndex]} account:");
-                //double withdraw = Double.Parse(Console.ReadLine());
-                //if (accIndex > userAccounts[userID].Length)
-                //{
-                //    Console.WriteLine("The account you choose doesn't exist.");
-                //    Console.ReadKey();
-                //    return;
-                //}
-                //else if (withdraw > accountsValue[userID][accIndex] || 0 > withdraw)
-                //{
-                //    Console.WriteLine("We can't handle your request.");
-                //    return;
-                //}
-                //else
-                //{
-                //    Console.Write("Please verify your withdrawal with your pincode.\n" +
-                //        "Pincode:");
-                //    int verifyPin = Convert.ToInt32(Console.ReadLine());
-                //    if (verifyPin == userPin[userID])
-                //    {
-                //        accountsValue[userID][accIndex] -= withdraw;
-                //        Console.WriteLine($"Withdrawal was successfull, you do now have {accountsValue[userID][accIndex]} on your {userAccounts[userID][accIndex]} account. ");
-                //    }
-                //    else
-                //    {
-                //        Console.WriteLine("Wrong input, withdrawal unsuccessfull.");
-                //        return;
-                //    }
-                //}
+                else if(toAccount > userAccounts[userID].Length || fromAccount > userAccounts[userID].Length)
+                {
+                    Console.WriteLine("The account you choose doesn't exist.");
+                    Console.ReadKey();
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("How much money would you like to transfer:");
+                    double movingMoney = double.Parse(Console.ReadLine());
+                    if(movingMoney > accountsValue[userID][fromAccount] || movingMoney > accountsValue[userID][toAccount])
+                    {
+                        Console.WriteLine("There were insufficient funds.");
+                        Console.ReadKey();
+                        return;
+                    }
+                    else
+                    {
+                        accountsValue[userID][fromAccount] -= movingMoney;
+                        accountsValue[userID][toAccount]+= movingMoney;
+                        Console.WriteLine("Your transfer is complete.\n" +
+                            "Your current balance for affected accounts are now:\n" +
+                            $"1.{userAccounts[userID][fromAccount]}.{accountsValue[userID][fromAccount]}\n" +
+                            $"2.{userAccounts[userID][toAccount]}.{accountsValue[userID][toAccount]} ");                        
+                        return;
+                        
+                    }
+                }                
             }
             catch
             {
