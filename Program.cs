@@ -39,13 +39,21 @@
             bool bankEngine = true;  //Boolean to restart the program if the user logs out.
             while (bankEngine == true)
             {
+                int userID;
+                Console.Clear();
                 Console.WriteLine("Welcome to BIG Bossy Bank:\n\n" +
                     "Please enter your ID and pincode.\n\n");
                 Console.Write("Enter ID:");
-                int userID = Convert.ToInt32(Console.ReadLine());
-                if (userID >= 5)
+                if (!int.TryParse(Console.ReadLine(), out userID))
                 {
-                    Console.WriteLine("We don't have so many accounts at the moment.\n");
+                    Console.Write("Incorrect input!");
+                    Thread.Sleep(1000);
+                }
+                else if (userID >= 5)
+                {
+                    Console.WriteLine("We don't have so many accounts at the moment.\n" +
+                        "Press any key to try again.");
+                    Console.ReadKey();
                 }
                 else
                 {
@@ -84,6 +92,7 @@
 
                     while (loginSuccess == true)
                     {
+                        Console.Clear();
                         MenuOption();
                         string menuChoice = Console.ReadLine();
                         switch (menuChoice)
@@ -98,22 +107,22 @@
 
                             case "2":
                                 Console.Clear();
-
-                                Console.WriteLine("\n Press enter to go to the options menu.");
+                                //Deposit(userID, userAccounts, accountsValue);
+                                Console.WriteLine("\nPress enter to go to the options menu.");
                                 Console.ReadKey();
                                 break;
 
                             case "3":
                                 Console.Clear();
 
-                                Console.WriteLine("\n Press enter to go to the options menu.");
+                                Console.WriteLine("\nPress enter to go to the options menu.");
                                 Console.ReadKey();
                                 break;
 
                             case "4":
                                 Console.Clear();
 
-                                Console.WriteLine("\n Press enter to go to the options menu.");
+                                Console.WriteLine("\nPress enter to go to the options menu.");
                                 Console.ReadKey();
                                 break;
 
@@ -127,10 +136,9 @@
                                     Console.ReadLine();
                                     loginAttempt = 0;
                                     verifyPin = 0;
-                                    loginTry = false;                                    
+                                    loginTry = false;
                                 }
                                 break;
-
                             default:
                                 Console.WriteLine("Unvalid option, try again.");
                                 Thread.Sleep(1500);
@@ -138,8 +146,6 @@
                                 break;
                         }
                     }
-                    
-
                 }
             }
         }
@@ -153,5 +159,32 @@
                 Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
             }
         }
+
+        //static void Deposit(int userID, string[][] userAccounts, double[][] accountsValue)
+        //{
+        //    Console.WriteLine("How much would you like to deposit:");
+        //    double deposit = Double.Parse(Console.ReadLine());
+        //    Console.WriteLine("\nWich account would u like to deposit it to?");
+        //    for (int i = 0; i < userAccounts[userID].Length; i++)
+        //    {
+        //        string userAccount = userAccounts[userID][i];
+        //        double accountValue = accountsValue[userID][i];
+
+        //        Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
+        //    }
+        //    double addCurrency = double.Parse(Console.ReadLine());
+        //    if (addCurrency > userAccounts[userID].Length)
+        //    {
+        //        Console.WriteLine("The account you choose doesn't exist.");
+        //        Console.ReadKey();
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        double newBalance = accountsValue[userID][addCurrency + deposit];
+        //        Console.WriteLine($"Deposit was successfull, you do now have ");
+        //    }
+        //    return;
+        //}
     }
 }
