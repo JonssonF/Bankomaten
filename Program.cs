@@ -2,7 +2,7 @@
 {
     internal class Program
     {
-       
+
         static void Main(string[] args)
         {
             void MenuOption() // Displays the menu after successfull login.
@@ -42,7 +42,7 @@
             {
                 int userID;
                 Console.Clear();
-                Console.WriteLine("Welcome to BIG Bossy Bank:\n\n" +
+                Console.WriteLine("Welcome to Barneys Brilliant Bank:\n\n" +
                     "Please enter your ID and pincode.\n\n");
                 Console.Write("Enter ID:");
                 if (!int.TryParse(Console.ReadLine(), out userID))
@@ -121,7 +121,7 @@
 
                             case "4":
                                 Console.Clear();
-
+                                Transfer(userID, userAccounts, accountsValue);
                                 Console.WriteLine("\nPress enter to go to the options menu.");
                                 Console.ReadKey();
                                 break;
@@ -149,96 +149,180 @@
                 }
             }
         }
+        static void DisplayAccounts(int userID, string[][] userAccounts, double[][] accountsValue)
+        {
+            for (int i = 0; i < userAccounts[userID].Length; i++)
+            {
+                string userAccount = userAccounts[userID][i];
+                double accountValue = accountsValue[userID][i];
+                Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
+            }
+        }
         static void ShowBalance(int userID, string[][] userAccounts, double[][] accountsValue)
         {
             for (int i = 0; i < userAccounts[userID].Length; i++)
             {
                 string userAccount = userAccounts[userID][i];
                 double accountValue = accountsValue[userID][i];
-
                 Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
             }
         }
-
         static void Deposit(int userID, string[][] userAccounts, double[][] accountsValue)
         {
-            
-            Console.WriteLine("How much would you like to deposit:");
-            double deposit = Double.Parse(Console.ReadLine());
-            Console.WriteLine("\nWich account would you like to deposit it to?");
-            for (int i = 0; i < userAccounts[userID].Length; i++)
+            try
             {
-                string userAccount = userAccounts[userID][i];
-                double accountValue = accountsValue[userID][i];
-
-                Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
+                Console.WriteLine("\nWich account would you like to deposit it to?");
+                for (int i = 0; i < userAccounts[userID].Length; i++)
+                {
+                    string userAccount = userAccounts[userID][i];
+                    double accountValue = accountsValue[userID][i];
+                    Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
+                }
+                int accIndex = int.Parse(Console.ReadLine());
+                Console.WriteLine("How much would you like to deposit:");
+                double deposit = Double.Parse(Console.ReadLine());
+                if (accIndex > userAccounts[userID].Length)
+                {
+                    Console.WriteLine("The account you choose doesn't exist.");
+                    Console.ReadKey();
+                    return;
+                }
+                else if (deposit <= 0)
+                {
+                    Console.WriteLine("You didn't select a valid option.");
+                }
+                else
+                {
+                    accIndex = accIndex - 1;
+                    accountsValue[userID][accIndex] += deposit;
+                    Console.WriteLine($"Deposit was successfull, you do now have {accountsValue[userID][accIndex]} on your {userAccounts[userID][accIndex]} account.. ");
+                }
             }
-
-            int accIndex = int.Parse(Console.ReadLine());
-
-            if (accIndex > userAccounts[userID].Length)
+            catch
             {
-                Console.WriteLine("The account you choose doesn't exist.");
-                Console.ReadKey();
-                return;
-            }
-            //else if (Felhantering)
-            //{
-
-            //}
-            else
-            {
-                accIndex = accIndex - 1;
-                accountsValue[userID][accIndex] += deposit;
-                Console.WriteLine($"Deposit was successfull, you do now have {accountsValue[userID][accIndex]} on your {userAccounts[userID][accIndex]} account.. ");
+                Console.WriteLine("Something went wrong.");
             }
             return;
         }
         static void Withdraw(int userID, string[][] userAccounts, double[][] accountsValue, int[] userPin)
         {
-            Console.WriteLine("\nWich account would you like to withdraw from?");
-            for (int i = 0; i < userAccounts[userID].Length; i++)
+            try
             {
-                string userAccount = userAccounts[userID][i];
-                double accountValue = accountsValue[userID][i];
-
-                Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
-            }
-
-            int accIndex = int.Parse(Console.ReadLine());
-            accIndex = accIndex - 1;
-
-            Console.WriteLine("How much would you like to withdraw:");
-            double withdraw = Double.Parse(Console.ReadLine());
-            if (accIndex > userAccounts[userID].Length)
-            {
-                Console.WriteLine("The account you choose doesn't exist.");
-                Console.ReadKey();
-                return;
-            }
-            else if (withdraw > accountsValue[userID][accIndex] || 0 > withdraw) 
-            {
-                Console.WriteLine("We can't handle your request.");
-                return;
-            }
-            else
-            {
-                Console.Write("Please verify your withdrawal with your pincode.\n" +
-                    "Pincode:");
-                int verifyPin = Convert.ToInt32(Console.ReadLine());
-                if(verifyPin == userPin[userID])
+                Console.WriteLine("\nWich account would you like to withdraw from?");
+                for (int i = 0; i < userAccounts[userID].Length; i++)
                 {
-                accountsValue[userID][accIndex] -= withdraw;
-                Console.WriteLine($"Withdrawal was successfull, you do now have {accountsValue[userID][accIndex]} on your {userAccounts[userID][accIndex]} account. ");
-
+                    string userAccount = userAccounts[userID][i];
+                    double accountValue = accountsValue[userID][i];
+                    Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
+                }
+                Console.Write("Enter number of displayed accounts:");
+                int accIndex = int.Parse(Console.ReadLine());
+                accIndex = accIndex - 1;
+                Console.Write($"How much would you like to withdraw from your {userAccounts[userID][accIndex]} account:");
+                double withdraw = Double.Parse(Console.ReadLine());
+                if (accIndex > userAccounts[userID].Length)
+                {
+                    Console.WriteLine("The account you choose doesn't exist.");
+                    Console.ReadKey();
+                    return;
+                }
+                else if (withdraw > accountsValue[userID][accIndex] || 0 > withdraw)
+                {
+                    Console.WriteLine("We can't handle your request.");
+                    return;
                 }
                 else
                 {
-                    Console.WriteLine("Wrong input, withdrawal unsuccessfull.");
-                    return;
+                    Console.Write("Please verify your withdrawal with your pincode.\n" +
+                        "Pincode:");
+                    int verifyPin = Convert.ToInt32(Console.ReadLine());
+                    if (verifyPin == userPin[userID])
+                    {
+                        accountsValue[userID][accIndex] -= withdraw;
+                        Console.WriteLine($"Withdrawal was successfull, you do now have {accountsValue[userID][accIndex]} on your {userAccounts[userID][accIndex]} account. ");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Wrong input, withdrawal unsuccessfull.");
+                        return;
+                    }
                 }
+            }
+            catch
+            {
+                Console.WriteLine("Something went wrong.");
             }
             return;
         }
+
+        static void Transfer(int userID, string[][] userAccounts, double[][] accountsValue) 
+        {
+            try
+            {
+                Console.WriteLine("\nSelect wich account you would like to transfer money from:");
+                for (int i = 0; i < userAccounts[userID].Length; i++)
+                {
+                    string userAccount = userAccounts[userID][i];
+                    double accountValue = accountsValue[userID][i];
+                    Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
+                }
+                Console.Write("\nAccountnumber:");
+                int fromAccount = int.Parse(Console.ReadLine());
+                fromAccount = fromAccount - 1;
+
+                Console.WriteLine("Wich account would you like to transfer money to:");
+                for (int i = 0; i < userAccounts[userID].Length; i++)
+                {
+                    string userAccount = userAccounts[userID][i];
+                    double accountValue = accountsValue[userID][i];
+                    Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
+                }
+                Console.Write("\nAccountnumber:");
+                int toAccount = int.Parse(Console.ReadLine());
+                toAccount = toAccount - 1;
+                if (fromAccount == toAccount)
+                {
+                    Console.WriteLine("You can't transfer to the same account.");                   
+                    return;
+                }
+                //Console.Write($"How much would you like to withdraw from your {userAccounts[userID][accIndex]} account:");
+                //double withdraw = Double.Parse(Console.ReadLine());
+                //if (accIndex > userAccounts[userID].Length)
+                //{
+                //    Console.WriteLine("The account you choose doesn't exist.");
+                //    Console.ReadKey();
+                //    return;
+                //}
+                //else if (withdraw > accountsValue[userID][accIndex] || 0 > withdraw)
+                //{
+                //    Console.WriteLine("We can't handle your request.");
+                //    return;
+                //}
+                //else
+                //{
+                //    Console.Write("Please verify your withdrawal with your pincode.\n" +
+                //        "Pincode:");
+                //    int verifyPin = Convert.ToInt32(Console.ReadLine());
+                //    if (verifyPin == userPin[userID])
+                //    {
+                //        accountsValue[userID][accIndex] -= withdraw;
+                //        Console.WriteLine($"Withdrawal was successfull, you do now have {accountsValue[userID][accIndex]} on your {userAccounts[userID][accIndex]} account. ");
+                //    }
+                //    else
+                //    {
+                //        Console.WriteLine("Wrong input, withdrawal unsuccessfull.");
+                //        return;
+                //    }
+                //}
+            }
+            catch
+            {
+                Console.WriteLine("Something went wrong.");
+            }
+            return;
+
+
+        }
     }
 }
+
