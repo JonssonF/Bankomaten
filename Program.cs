@@ -39,18 +39,17 @@
             bool bankEngine = true;  //Boolean to restart the program if the user logs out.
             while (bankEngine == true)
             {
-                Console.WriteLine("Welcome to the bank:\n\n" +
+                Console.WriteLine("Welcome to BIG Bossy Bank:\n\n" +
                     "Please enter your ID and pincode.\n\n");
                 Console.Write("Enter ID:");
-                
-                int verifyUser = Convert.ToInt32(Console.ReadLine());
-                if (verifyUser >= 5)
+                int userID = Convert.ToInt32(Console.ReadLine());
+                if (userID >= 5)
                 {
                     Console.WriteLine("We don't have so many accounts at the moment.\n");
                 }
                 else
                 {
-                    Console.Write($"Hi, {userName[verifyUser, 1]}, please enter your pincode:");
+                    Console.Write($"Hi, {userName[userID, 1]}, please enter your pincode:");
                     int verifyPin = Convert.ToInt32(Console.ReadLine());
                     int loginAttempt = 0;
                     bool loginSuccess = false;
@@ -58,7 +57,7 @@
                     do
                     {
                         loginAttempt++;
-                        if (verifyPin == userPin[verifyUser])
+                        if (verifyPin == userPin[userID])
                         {
                             Console.WriteLine("Pincode accepted.");
                             Thread.Sleep(1500);
@@ -79,54 +78,79 @@
                             Console.Clear();
                             Console.Write("Wrong pincode, try again: ");
                             verifyPin = Convert.ToInt32(Console.ReadLine());
-                            
+
                         }
                     } while (loginTry == true && loginAttempt < 3);
 
-                        while (loginSuccess == true)
+                    while (loginSuccess == true)
+                    {
+                        MenuOption();
+                        string menuChoice = Console.ReadLine();
+                        switch (menuChoice)
                         {
-                            MenuOption();
-                            string menuChoice = Console.ReadLine();
-                            switch (menuChoice)
-                            {
-                                case "1":
-
-                                    break;
-                                case "2":
-
-                                    break;
-                                case "3":
-
-                                    break;
-                                case "4":
-
-                                    break;
-
-                                case "5":
-                                    Console.Clear();
-                                    Console.WriteLine($"Have a nice day {userName[verifyUser, 1]}!");
-                                    loginSuccess = false;
-                                    break;
-
-                                default:
-                                    Console.WriteLine("Unvalid option, try again.");
-                                    Thread.Sleep(1500);
-                                    Console.Clear();
-                                    break;
-                            }
-                            if (loginSuccess == false)
-                            {
-                                Console.WriteLine("Press enter to return to the main menu.");
-                                Console.ReadLine();
-                                loginAttempt = 0;
-                                verifyPin = 0;
-                                loginTry = false;
+                            case "1":
+                                Console.Clear();
+                                ShowBalance(userID, userAccounts, accountsValue);
+                                Console.Write("\nPress enter to go to the options menu.");
+                                Console.ReadKey();
+                                Console.Clear();
                                 break;
-                            }
-                            break;
-                        }                        
+
+                            case "2":
+                                Console.Clear();
+
+                                Console.WriteLine("\n Press enter to go to the options menu.");
+                                Console.ReadKey();
+                                break;
+
+                            case "3":
+                                Console.Clear();
+
+                                Console.WriteLine("\n Press enter to go to the options menu.");
+                                Console.ReadKey();
+                                break;
+
+                            case "4":
+                                Console.Clear();
+
+                                Console.WriteLine("\n Press enter to go to the options menu.");
+                                Console.ReadKey();
+                                break;
+
+                            case "5":
+                                Console.Clear();
+                                Console.WriteLine($"Have a nice day {userName[userID, 1]}!");
+                                loginSuccess = false;
+                                if (loginSuccess == false)
+                                {
+                                    Console.WriteLine("Press enter to return to the main menu.");
+                                    Console.ReadLine();
+                                    loginAttempt = 0;
+                                    verifyPin = 0;
+                                    loginTry = false;                                    
+                                }
+                                break;
+
+                            default:
+                                Console.WriteLine("Unvalid option, try again.");
+                                Thread.Sleep(1500);
+                                Console.Clear();
+                                break;
+                        }
+                    }
                     
+
                 }
+            }
+        }
+        static void ShowBalance(int userID, string[][] userAccounts, double[][] accountsValue)
+        {
+            for (int i = 0; i < userAccounts[userID].Length; i++)
+            {
+                string userAccount = userAccounts[userID][i];
+                double accountValue = accountsValue[userID][i];
+
+                Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
             }
         }
     }
