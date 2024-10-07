@@ -2,6 +2,7 @@
 {
     internal class Program
     {
+       
         static void Main(string[] args)
         {
             void MenuOption() // Displays the menu after successfull login.
@@ -39,18 +40,25 @@
             bool bankEngine = true;  //Boolean to restart the program if the user logs out.
             while (bankEngine == true)
             {
-                Console.WriteLine("Welcome to the bank:\n\n" +
+                int userID;
+                Console.Clear();
+                Console.WriteLine("Welcome to BIG Bossy Bank:\n\n" +
                     "Please enter your ID and pincode.\n\n");
                 Console.Write("Enter ID:");
-                
-                int verifyUser = Convert.ToInt32(Console.ReadLine());
-                if (verifyUser >= 5)
+                if (!int.TryParse(Console.ReadLine(), out userID))
                 {
-                    Console.WriteLine("We don't have so many accounts at the moment.\n");
+                    Console.Write("Incorrect input!");
+                    Thread.Sleep(1000);
+                }
+                else if (userID >= 5)
+                {
+                    Console.WriteLine("We don't have so many accounts at the moment.\n" +
+                        "Press any key to try again.");
+                    Console.ReadKey();
                 }
                 else
                 {
-                    Console.Write($"Hi, {userName[verifyUser, 1]}, please enter your pincode:");
+                    Console.Write($"Hi, {userName[userID, 1]}, please enter your pincode:");
                     int verifyPin = Convert.ToInt32(Console.ReadLine());
                     int loginAttempt = 0;
                     bool loginSuccess = false;
@@ -58,7 +66,7 @@
                     do
                     {
                         loginAttempt++;
-                        if (verifyPin == userPin[verifyUser])
+                        if (verifyPin == userPin[userID])
                         {
                             Console.WriteLine("Pincode accepted.");
                             Thread.Sleep(1500);
@@ -79,55 +87,158 @@
                             Console.Clear();
                             Console.Write("Wrong pincode, try again: ");
                             verifyPin = Convert.ToInt32(Console.ReadLine());
-                            
                         }
                     } while (loginTry == true && loginAttempt < 3);
 
-                        while (loginSuccess == true)
+                    while (loginSuccess == true)
+                    {
+                        Console.Clear();
+                        MenuOption();
+                        string menuChoice = Console.ReadLine();
+                        switch (menuChoice)
                         {
-                            MenuOption();
-                            string menuChoice = Console.ReadLine();
-                            switch (menuChoice)
-                            {
-                                case "1":
-
-                                    break;
-                                case "2":
-
-                                    break;
-                                case "3":
-
-                                    break;
-                                case "4":
-
-                                    break;
-
-                                case "5":
-                                    Console.Clear();
-                                    Console.WriteLine($"Have a nice day {userName[verifyUser, 1]}!");
-                                    loginSuccess = false;
-                                    break;
-
-                                default:
-                                    Console.WriteLine("Unvalid option, try again.");
-                                    Thread.Sleep(1500);
-                                    Console.Clear();
-                                    break;
-                            }
-                            if (loginSuccess == false)
-                            {
-                                Console.WriteLine("Press enter to return to the main menu.");
-                                Console.ReadLine();
-                                loginAttempt = 0;
-                                verifyPin = 0;
-                                loginTry = false;
+                            case "1":
+                                Console.Clear();
+                                ShowBalance(userID, userAccounts, accountsValue);
+                                Console.Write("\nPress enter to go to the options menu.");
+                                Console.ReadKey();
+                                Console.Clear();
                                 break;
-                            }
-                            break;
-                        }                        
-                    
+
+                            case "2":
+                                Console.Clear();
+                                Deposit(userID, userAccounts, accountsValue);
+                                Console.WriteLine("\nPress enter to go to the options menu.");
+                                Console.ReadKey();
+                                break;
+
+                            case "3":
+                                Console.Clear();
+                                Withdraw(userID, userAccounts, accountsValue, userPin);
+                                Console.WriteLine("\nPress enter to go to the options menu.");
+                                Console.ReadKey();
+                                break;
+
+                            case "4":
+                                Console.Clear();
+
+                                Console.WriteLine("\nPress enter to go to the options menu.");
+                                Console.ReadKey();
+                                break;
+
+                            case "5":
+                                Console.Clear();
+                                Console.WriteLine($"Have a nice day {userName[userID, 1]}!");
+                                loginSuccess = false;
+                                if (loginSuccess == false)
+                                {
+                                    Console.WriteLine("Press enter to return to the main menu.");
+                                    Console.ReadLine();
+                                    loginAttempt = 0;
+                                    verifyPin = 0;
+                                    loginTry = false;
+                                }
+                                break;
+                            default:
+                                Console.WriteLine("Unvalid option, try again.");
+                                Thread.Sleep(1500);
+                                Console.Clear();
+                                break;
+                        }
+                    }
                 }
             }
+        }
+        static void ShowBalance(int userID, string[][] userAccounts, double[][] accountsValue)
+        {
+            for (int i = 0; i < userAccounts[userID].Length; i++)
+            {
+                string userAccount = userAccounts[userID][i];
+                double accountValue = accountsValue[userID][i];
+
+                Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
+            }
+        }
+
+        static void Deposit(int userID, string[][] userAccounts, double[][] accountsValue)
+        {
+            
+            Console.WriteLine("How much would you like to deposit:");
+            double deposit = Double.Parse(Console.ReadLine());
+            Console.WriteLine("\nWich account would you like to deposit it to?");
+            for (int i = 0; i < userAccounts[userID].Length; i++)
+            {
+                string userAccount = userAccounts[userID][i];
+                double accountValue = accountsValue[userID][i];
+
+                Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
+            }
+
+            int accIndex = int.Parse(Console.ReadLine());
+
+            if (accIndex > userAccounts[userID].Length)
+            {
+                Console.WriteLine("The account you choose doesn't exist.");
+                Console.ReadKey();
+                return;
+            }
+            //else if (Felhantering)
+            //{
+
+            //}
+            else
+            {
+                accIndex = accIndex - 1;
+                accountsValue[userID][accIndex] += deposit;
+                Console.WriteLine($"Deposit was successfull, you do now have {accountsValue[userID][accIndex]} on your {userAccounts[userID][accIndex]} account.. ");
+            }
+            return;
+        }
+        static void Withdraw(int userID, string[][] userAccounts, double[][] accountsValue, int[] userPin)
+        {
+            Console.WriteLine("\nWich account would you like to withdraw from?");
+            for (int i = 0; i < userAccounts[userID].Length; i++)
+            {
+                string userAccount = userAccounts[userID][i];
+                double accountValue = accountsValue[userID][i];
+
+                Console.WriteLine($"{i + 1}.{userAccount}: {accountValue}");
+            }
+
+            int accIndex = int.Parse(Console.ReadLine());
+            accIndex = accIndex - 1;
+
+            Console.WriteLine("How much would you like to withdraw:");
+            double withdraw = Double.Parse(Console.ReadLine());
+            if (accIndex > userAccounts[userID].Length)
+            {
+                Console.WriteLine("The account you choose doesn't exist.");
+                Console.ReadKey();
+                return;
+            }
+            else if (withdraw > accountsValue[userID][accIndex] || 0 > withdraw) 
+            {
+                Console.WriteLine("We can't handle your request.");
+                return;
+            }
+            else
+            {
+                Console.Write("Please verify your withdrawal with your pincode.\n" +
+                    "Pincode:");
+                int verifyPin = Convert.ToInt32(Console.ReadLine());
+                if(verifyPin == userPin[userID])
+                {
+                accountsValue[userID][accIndex] -= withdraw;
+                Console.WriteLine($"Withdrawal was successfull, you do now have {accountsValue[userID][accIndex]} on your {userAccounts[userID][accIndex]} account. ");
+
+                }
+                else
+                {
+                    Console.WriteLine("Wrong input, withdrawal unsuccessfull.");
+                    return;
+                }
+            }
+            return;
         }
     }
 }
