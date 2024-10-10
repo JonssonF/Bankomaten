@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Include="C:\Users\Fredr\Desktop\S K O L A\Säkerhetskopia\Bankomaten.cs" Link="Bankomaten.cs" />
+  </ItemGroup>
+
 </Project>
